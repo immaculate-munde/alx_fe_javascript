@@ -139,7 +139,7 @@ function importFromJsonFile(event) {
   fileReader.readAsText(event.target.files[0]);
 }
 
-// ✅ Required async/await function
+// ✅ Fetch server quotes using async/await
 async function fetchQuotesFromServer() {
   const response = await fetch("https://jsonplaceholder.typicode.com/posts?_limit=3");
   const serverData = await response.json();
@@ -149,21 +149,49 @@ async function fetchQuotesFromServer() {
   }));
 }
 
-// ✅ Server sync using async/await
+// ✅ Send quotes to server using POST
+async function sendQuotesToServer() {
+  const status = document.getElementById("syncStatus");
+  status.innerHTML = "📤 Sending quotes to server...";
+
+  try {
+    const response = await fetch("https://jsonplaceholder.typicode.com/posts", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(quotes)
+    });
+
+    if (!response.ok) {
+      throw new Error(`Server responded with status ${response.status}`);
+    }
+
+    const result = await response.json();
+    console.log("Server response:", result);
+    status.innerHTML = "✅ Quotes sent to server (simulated).";
+  } catch (error) {
+    console.error("POST error:", error);
+    status.innerHTML = "❌ Failed to send quotes to server.";
+  }
+}
+
+// ✅ Sync server with local + push local to server
 async function syncWithServer() {
   const status = document.getElementById("syncStatus");
   status.innerHTML = "🔄 Syncing with server...";
 
   try {
     const serverQuotes = await fetchQuotesFromServer();
-    quotes = [...serverQuotes, ...quotes];
+    quotes = [...serverQuotes, ...quotes]; // Conflict resolution: server first
     saveQuotesToLocalStorage();
     populateCategories();
     filterQuotes();
-    status.innerHTML = "✅ Synced successfully. Server quotes added.";
+    await sendQuotesToServer(); // Simulate sending data
+    status.innerHTML = "✅ Sync complete with server.";
   } catch (error) {
-    status.innerHTML = "❌ Failed to sync with server.";
     console.error("Sync error:", error);
+    status.innerHTML = "❌ Sync failed.";
   }
 }
 
