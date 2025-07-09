@@ -2,6 +2,7 @@ let quotes = [];
 const quoteDisplay = document.getElementById("quoteDisplay");
 const newQuoteBtn = document.getElementById("newQuote");
 
+// Load quotes and setup UI on page load
 window.onload = function () {
   const storedQuotes = localStorage.getItem("quotes");
   if (storedQuotes) {
@@ -15,18 +16,22 @@ window.onload = function () {
   }
 
   showRandomQuote();
+  createAddQuoteForm(); // ✅ Dynamically create the quote input form
 };
 
+// Show a random quote
 function showRandomQuote() {
   if (quotes.length === 0) {
     quoteDisplay.innerHTML = "No quotes available.";
     return;
   }
+
   const randomIndex = Math.floor(Math.random() * quotes.length);
   const quote = quotes[randomIndex];
   quoteDisplay.innerHTML = `"${quote.text}" — <em>${quote.category}</em>`;
 }
 
+// Add a new quote from the form
 function addQuote() {
   const textInput = document.getElementById("newQuoteText");
   const categoryInput = document.getElementById("newQuoteCategory");
@@ -43,15 +48,39 @@ function addQuote() {
   quotes.push(newQuote);
   saveQuotesToLocalStorage();
 
-  // ✅ Use innerHTML here too
   quoteDisplay.innerHTML = `"${newQuote.text}" — <em>${newQuote.category}</em>`;
 
   textInput.value = "";
   categoryInput.value = "";
 }
 
+// Save the quotes array to localStorage
 function saveQuotesToLocalStorage() {
   localStorage.setItem("quotes", JSON.stringify(quotes));
 }
 
+// ✅ Dynamically create the quote input form
+function createAddQuoteForm() {
+  const formContainer = document.getElementById("quoteFormContainer");
+
+  const inputText = document.createElement("input");
+  inputText.type = "text";
+  inputText.id = "newQuoteText";
+  inputText.placeholder = "Enter a new quote";
+
+  const inputCategory = document.createElement("input");
+  inputCategory.type = "text";
+  inputCategory.id = "newQuoteCategory";
+  inputCategory.placeholder = "Enter quote category";
+
+  const addButton = document.createElement("button");
+  addButton.textContent = "Add Quote";
+  addButton.onclick = addQuote;
+
+  formContainer.appendChild(inputText);
+  formContainer.appendChild(inputCategory);
+  formContainer.appendChild(addButton);
+}
+
+// Event listener for the "Show New Quote" button
 newQuoteBtn.addEventListener("click", showRandomQuote);
