@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple List App</title>
+    <style>
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #e6f2ff;
+        color: #003366;
+        margin: 0;
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    h1 {
+        color: #004080;
+    }
+
+    input[type="text"] {
+        padding: 10px;
+        font-size: 16px;
+        border: 2px solid #66b3ff;
+        border-radius: 5px;
+        width: 250px;
+        margin-right: 10px;
+    }
+
+    button {
+        padding: 10px 20px;
+        font-size: 16px;
+        background-color: #3399ff;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+
+    button:hover {
+        background-color: #007acc;
+    }
+
+    ul {
+        list-style-type: disc;
+        padding-left: 20px;
+        width: 300px;
+    }
+
+    li {
+        padding: 8px;
+        background-color: #cce6ff;
+        margin: 5px 0;
+        border-radius: 4px;
+    }
+
+    div {
+        margin-bottom: 20px;
+    }
+</style>
+
+</head>
+<body>
+
+    <h1>Simple List App</h1>
+
+    <!-- Text box and button -->
+    <div>
+        <input type="text" id="input-text" placeholder="Enter item">
+        <button id="add-button">Add</button>
+    </div>
+
+    <h2>Added List:</h2>
+    <ul id="list-container"></ul>
+
+    <script src="script.js"></script>
+</body>
+</html>
