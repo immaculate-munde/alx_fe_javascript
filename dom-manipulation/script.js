@@ -146,3 +146,33 @@ function importFromJsonFile(event) {
   };
   fileReader.readAsText(event.target.files[0]);
 }
+// Sync with the simulated server (JSONPlaceholder)
+document.getElementById("syncBtn").addEventListener("click", syncWithServer);
+
+function syncWithServer() {
+  const status = document.getElementById("syncStatus");
+  status.innerHTML = "🔄 Syncing with server...";
+
+  // Simulate fetching from server
+  fetch("https://jsonplaceholder.typicode.com/posts?_limit=3")
+    .then(response => response.json())
+    .then(serverData => {
+      // Convert fake server posts into quote format
+      const serverQuotes = serverData.map(post => ({
+        text: post.title,
+        category: "Server"
+      }));
+
+      // Simple conflict resolution: server wins
+      quotes = [...serverQuotes, ...quotes]; // Prepend server quotes
+      saveQuotesToLocalStorage();
+      populateCategories();
+      filterQuotes();
+
+      status.innerHTML = "✅ Synced successfully. Server quotes added (server takes priority).";
+    })
+    .catch(err => {
+      status.innerHTML = "❌ Failed to sync with server.";
+      console.error("Sync error:", err);
+    });
+}
