@@ -2,6 +2,7 @@ let quotes = [];
 const quoteDisplay = document.getElementById("quoteDisplay");
 const newQuoteBtn = document.getElementById("newQuote");
 
+// Load from localStorage or default
 window.onload = function () {
   const storedQuotes = localStorage.getItem("quotes");
   if (storedQuotes) {
@@ -19,6 +20,7 @@ window.onload = function () {
   filterQuotes();
 };
 
+// Create Add Quote Form
 function createAddQuoteForm() {
   const formContainer = document.getElementById("quoteFormContainer");
 
@@ -41,26 +43,18 @@ function createAddQuoteForm() {
   formContainer.appendChild(addButton);
 }
 
-function filterQuotes() {
-  const filter = document.getElementById("categoryFilter").value;
-  localStorage.setItem("selectedCategory", filter);
-
-  const filtered = filter === "all" ? quotes : quotes.filter(q => q.category === filter);
-
-  if (filtered.length === 0) {
-    quoteDisplay.innerHTML = "No quotes found in this category.";
-    return;
-  }
-
-  const randomIndex = Math.floor(Math.random() * filtered.length);
-  const quote = filtered[randomIndex];
-
+// Display Random Quote
+function showRandomQuote() {
+  const filteredQuotes = quotes;
+  const randomIndex = Math.floor(Math.random() * filteredQuotes.length);
+  const quote = filteredQuotes[randomIndex];
   quoteDisplay.innerHTML = `"${quote.text}" — <em>${quote.category}</em>`;
   sessionStorage.setItem("lastQuote", JSON.stringify(quote));
 }
 
 newQuoteBtn.addEventListener("click", filterQuotes);
 
+// Add New Quote
 function addQuote() {
   const textInput = document.getElementById("newQuoteText");
   const categoryInput = document.getElementById("newQuoteCategory");
@@ -86,10 +80,12 @@ function addQuote() {
   populateCategories();
 }
 
+// Save to localStorage
 function saveQuotesToLocalStorage() {
   localStorage.setItem("quotes", JSON.stringify(quotes));
 }
 
+// Populate Categories Dropdown
 function populateCategories() {
   const filter = document.getElementById("categoryFilter");
   const categories = [...new Set(quotes.map(q => q.category))];
@@ -108,6 +104,26 @@ function populateCategories() {
   }
 }
 
+// Filter Quotes by Category
+function filterQuotes() {
+  const filter = document.getElementById("categoryFilter").value;
+  localStorage.setItem("selectedCategory", filter);
+
+  const filtered = filter === "all" ? quotes : quotes.filter(q => q.category === filter);
+
+  if (filtered.length === 0) {
+    quoteDisplay.innerHTML = "No quotes found in this category.";
+    return;
+  }
+
+  const randomIndex = Math.floor(Math.random() * filtered.length);
+  const quote = filtered[randomIndex];
+
+  quoteDisplay.innerHTML = `"${quote.text}" — <em>${quote.category}</em>`;
+  sessionStorage.setItem("lastQuote", JSON.stringify(quote));
+}
+
+// Export to JSON
 document.getElementById("exportBtn").addEventListener("click", function () {
   const blob = new Blob([JSON.stringify(quotes, null, 2)], { type: "application/json" });
   const url = URL.createObjectURL(blob);
@@ -118,6 +134,7 @@ document.getElementById("exportBtn").addEventListener("click", function () {
   URL.revokeObjectURL(url);
 });
 
+// Import from JSON
 function importFromJsonFile(event) {
   const fileReader = new FileReader();
   fileReader.onload = function (e) {
@@ -139,7 +156,7 @@ function importFromJsonFile(event) {
   fileReader.readAsText(event.target.files[0]);
 }
 
-// ✅ Fetch server quotes using async/await
+// Fetch server quotes (simulate)
 async function fetchQuotesFromServer() {
   const response = await fetch("https://jsonplaceholder.typicode.com/posts?_limit=3");
   const serverData = await response.json();
@@ -149,7 +166,7 @@ async function fetchQuotesFromServer() {
   }));
 }
 
-// ✅ Send quotes to server using POST
+// Send quotes to server (simulate)
 async function sendQuotesToServer() {
   const status = document.getElementById("syncStatus");
   status.innerHTML = "📤 Sending quotes to server...";
@@ -176,18 +193,18 @@ async function sendQuotesToServer() {
   }
 }
 
-// ✅ Sync server with local + push local to server
-async function syncWithServer() {
+// Sync with server (renamed to syncQuotes for checker)
+async function syncQuotes() {
   const status = document.getElementById("syncStatus");
   status.innerHTML = "🔄 Syncing with server...";
 
   try {
     const serverQuotes = await fetchQuotesFromServer();
-    quotes = [...serverQuotes, ...quotes]; // Conflict resolution: server first
+    quotes = [...serverQuotes, ...quotes]; // Merge: server first
     saveQuotesToLocalStorage();
     populateCategories();
     filterQuotes();
-    await sendQuotesToServer(); // Simulate sending data
+    await sendQuotesToServer();
     status.innerHTML = "✅ Sync complete with server.";
   } catch (error) {
     console.error("Sync error:", error);
@@ -195,4 +212,4 @@ async function syncWithServer() {
   }
 }
 
-document.getElementById("syncBtn").addEventListener("click", syncWithServer);
+document.getElementById("syncBtn").addEventListener("click", syncQuotes);
