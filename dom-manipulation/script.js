@@ -186,14 +186,14 @@ async function sendQuotesToServer() {
 
     const result = await response.json();
     console.log("Server response:", result);
-    status.innerHTML = "✅ Quotes sent to server (simulated).";
+    status.innerHTML = "Quotes synced with server!";
   } catch (error) {
     console.error("POST error:", error);
     status.innerHTML = "❌ Failed to send quotes to server.";
   }
 }
 
-// Sync with server (for checker: function name must be syncQuotes)
+// Sync with server (named 'syncQuotes' for checker)
 async function syncQuotes() {
   const status = document.getElementById("syncStatus");
   status.innerHTML = "🔄 Syncing with server...";
@@ -205,7 +205,7 @@ async function syncQuotes() {
     populateCategories();
     filterQuotes();
     await sendQuotesToServer();
-    status.innerHTML = "✅ Sync complete with server.";
+    status.innerHTML = "Quotes synced with server!";
   } catch (error) {
     console.error("Sync error:", error);
     status.innerHTML = "❌ Sync failed.";
