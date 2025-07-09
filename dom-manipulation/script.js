@@ -1,16 +1,20 @@
-// Add event listener to the "Add" button
-document.getElementById("add-button").addEventListener("click", addItem);
+// Sample quotes array
+const quotes = [
+  { text: "The best way to get started is to quit talking and begin doing.", category: "Motivation" },
+  { text: "Don't watch the clock; do what it does. Keep going.", category: "Inspiration" },
+  { text: "Code is like humor. When you have to explain it, it’s bad.", category: "Programming" }
+];
 
-// Function to add an item to the list
-function addItem() {
-    const input = document.getElementById("input-text");
-    const inputValue = input.value.trim();
+// Get references
+const quoteDisplay = document.getElementById("quoteDisplay");
+const newQuoteBtn = document.getElementById("newQuote");
 
-    if (inputValue !== "") {
-        const listItem = document.createElement("li");
-        listItem.textContent = inputValue;
-        document.getElementById("list-container").appendChild(listItem);
-        input.value = "";
-    }
+// Show a random quote
+function showRandomQuote() {
+  const randomIndex = Math.floor(Math.random() * quotes.length);
+  const quote = quotes[randomIndex];
+  quoteDisplay.textContent = `"${quote.text}" — ${quote.category}`;
 }
 
+// Event listener for the button
+newQuoteBtn.addEventListener("click", showRandomQuote);
