@@ -15,5 +15,3 @@ This is a basic web application that lets users add items to a list. It's built 
 2. Open `index.html` in a browser.
 3. Type something in the input field and click "Add" to add it to the list.
 
-## 📁 Project Structure
-
