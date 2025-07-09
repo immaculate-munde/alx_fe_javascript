@@ -1,0 +1,122 @@
+/* Reset & Base Styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #0a192f;
+  color: #d9f7f6;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* Headings */
+h1, h2 {
+  color: #64ffda;
+  margin-bottom: 15px;
+}
+
+/* Quote Display */
+#quoteDisplay {
+  background-color: #112240;
+  border: 2px solid #64ffda;
+  border-radius: 8px;
+  padding: 20px;
+  margin: 20px 0;
+  width: 100%;
+  max-width: 600px;
+  font-size: 18px;
+  font-style: italic;
+  color: #ffffff;
+  transition: background-color 0.3s ease;
+}
+
+#quoteDisplay:hover {
+  background-color: #0f2545;
+}
+
+/* Inputs and Select */
+input[type="text"],
+select,
+input[type="file"] {
+  padding: 10px;
+  margin: 8px 5px;
+  border: 2px solid #64ffda;
+  border-radius: 5px;
+  background-color: #112240;
+  color: #d9f7f6;
+  width: 100%;
+  max-width: 280px;
+  transition: border-color 0.3s ease;
+}
+
+input:focus,
+select:focus {
+  border-color: #52e0c4;
+  outline: none;
+}
+
+/* Buttons */
+button {
+  padding: 10px 20px;
+  font-size: 16px;
+  margin: 10px 5px;
+  background-color: #64ffda;
+  color: #0a192f;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+button:hover {
+  background-color: #52e0c4;
+  transform: scale(1.05);
+}
+
+button:active {
+  transform: scale(0.98);
+}
+
+/* Container spacing */
+#quoteFormContainer,
+#syncStatus {
+  margin-top: 15px;
+}
+
+/* Sync status message */
+#syncStatus {
+  font-size: 14px;
+  color: #a2d5c6;
+}
+
+/* Responsive Layout */
+@media (max-width: 600px) {
+  input[type="text"],
+  select,
+  button {
+    width: 90%;
+    font-size: 15px;
+  }
+
+  #quoteDisplay {
+    font-size: 16px;
+    padding: 15px;
+  }
+}
+footer {
+  margin-top: 40px;
+  padding: 15px 0;
+  width: 100%;
+  text-align: center;
+  background-color: #112240;
+  color: #64ffda;
+  font-size: 14px;
+  border-top: 1px solid #64ffda;
+}
