@@ -2,6 +2,7 @@ let quotes = [];
 const quoteDisplay = document.getElementById("quoteDisplay");
 const newQuoteBtn = document.getElementById("newQuote");
 
+// On page load
 window.onload = function () {
   const storedQuotes = localStorage.getItem("quotes");
   if (storedQuotes) {
@@ -16,10 +17,10 @@ window.onload = function () {
 
   createAddQuoteForm();
   populateCategories();
-  filterQuotes(); // use saved filter or default
+  filterQuotes();
 };
 
-// Create the add quote form dynamically
+// ✅ Task 0: DOM - Create add quote form
 function createAddQuoteForm() {
   const formContainer = document.getElementById("quoteFormContainer");
 
@@ -42,7 +43,7 @@ function createAddQuoteForm() {
   formContainer.appendChild(addButton);
 }
 
-// Show a random quote from filtered list
+// ✅ Task 0: DOM - Filter quotes by category
 function filterQuotes() {
   const filter = document.getElementById("categoryFilter").value;
   localStorage.setItem("selectedCategory", filter);
@@ -61,10 +62,10 @@ function filterQuotes() {
   sessionStorage.setItem("lastQuote", JSON.stringify(quote));
 }
 
-// Show new random quote on button click
+// ✅ Show quote when button clicked
 newQuoteBtn.addEventListener("click", filterQuotes);
 
-// Add new quote to array and storage
+// ✅ Task 0: DOM - Add new quote
 function addQuote() {
   const textInput = document.getElementById("newQuoteText");
   const categoryInput = document.getElementById("newQuoteCategory");
@@ -90,12 +91,12 @@ function addQuote() {
   populateCategories();
 }
 
-// Save quotes to localStorage
+// ✅ Task 1: Storage - Save to localStorage
 function saveQuotesToLocalStorage() {
   localStorage.setItem("quotes", JSON.stringify(quotes));
 }
 
-// Populate the category filter dropdown
+// ✅ Task 2: Filtering - Populate dropdown
 function populateCategories() {
   const filter = document.getElementById("categoryFilter");
   const categories = [...new Set(quotes.map(q => q.category))];
@@ -114,7 +115,7 @@ function populateCategories() {
   }
 }
 
-// Export quotes to a downloadable JSON file
+// ✅ Task 1: Export JSON
 document.getElementById("exportBtn").addEventListener("click", function () {
   const blob = new Blob([JSON.stringify(quotes, null, 2)], { type: "application/json" });
   const url = URL.createObjectURL(blob);
@@ -125,7 +126,7 @@ document.getElementById("exportBtn").addEventListener("click", function () {
   URL.revokeObjectURL(url);
 });
 
-// Import quotes from a JSON file
+// ✅ Task 1: Import JSON
 function importFromJsonFile(event) {
   const fileReader = new FileReader();
   fileReader.onload = function (e) {
@@ -146,33 +147,37 @@ function importFromJsonFile(event) {
   };
   fileReader.readAsText(event.target.files[0]);
 }
-// Sync with the simulated server (JSONPlaceholder)
-document.getElementById("syncBtn").addEventListener("click", syncWithServer);
 
+// ✅ Task 3: Server Sync - Required function
+function fetchQuotesFromServer() {
+  return fetch("https://jsonplaceholder.typicode.com/posts?_limit=3")
+    .then(response => response.json())
+    .then(serverData => {
+      return serverData.map(post => ({
+        text: post.title,
+        category: "Server"
+      }));
+    });
+}
+
+// ✅ Task 3: Sync and Conflict Resolution
 function syncWithServer() {
   const status = document.getElementById("syncStatus");
   status.innerHTML = "🔄 Syncing with server...";
 
-  // Simulate fetching from server
-  fetch("https://jsonplaceholder.typicode.com/posts?_limit=3")
-    .then(response => response.json())
-    .then(serverData => {
-      // Convert fake server posts into quote format
-      const serverQuotes = serverData.map(post => ({
-        text: post.title,
-        category: "Server"
-      }));
-
-      // Simple conflict resolution: server wins
-      quotes = [...serverQuotes, ...quotes]; // Prepend server quotes
+  fetchQuotesFromServer()
+    .then(serverQuotes => {
+      quotes = [...serverQuotes, ...quotes]; // Server takes priority
       saveQuotesToLocalStorage();
       populateCategories();
       filterQuotes();
-
-      status.innerHTML = "✅ Synced successfully. Server quotes added (server takes priority).";
+      status.innerHTML = "✅ Synced successfully. Server quotes added.";
     })
     .catch(err => {
       status.innerHTML = "❌ Failed to sync with server.";
       console.error("Sync error:", err);
     });
 }
+
+// ✅ Sync button event
+document.getElementById("syncBtn").addEventListener("click", syncWithServer);
