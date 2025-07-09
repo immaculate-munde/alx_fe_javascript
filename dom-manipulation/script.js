@@ -193,7 +193,7 @@ async function sendQuotesToServer() {
   }
 }
 
-// Sync with server (renamed to syncQuotes for checker)
+// Sync with server (for checker: function name must be syncQuotes)
 async function syncQuotes() {
   const status = document.getElementById("syncStatus");
   status.innerHTML = "🔄 Syncing with server...";
@@ -213,3 +213,6 @@ async function syncQuotes() {
 }
 
 document.getElementById("syncBtn").addEventListener("click", syncQuotes);
+
+// ✅ Auto-sync every 60 seconds
+setInterval(syncQuotes, 60000);
