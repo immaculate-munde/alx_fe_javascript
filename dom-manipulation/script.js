@@ -84,3 +84,49 @@ function createAddQuoteForm() {
 
 // Event listener for the "Show New Quote" button
 newQuoteBtn.addEventListener("click", showRandomQuote);
+
+
+// === Export quotes as a JSON file ===
+document.getElementById("exportBtn").addEventListener("click", function () {
+  const blob = new Blob([JSON.stringify(quotes, null, 2)], { type: "application/json" });
+  const url = URL.createObjectURL(blob);
+
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "quotes.json";
+  a.click();
+
+  URL.revokeObjectURL(url);
+});
+
+// === Import quotes from a JSON file ===
+function importFromJsonFile(event) {
+  const fileReader = new FileReader();
+  fileReader.onload = function (e) {
+    try {
+      const importedQuotes = JSON.parse(e.target.result);
+
+      if (!Array.isArray(importedQuotes)) {
+        alert("Invalid file format.");
+        return;
+      }
+
+      quotes.push(...importedQuotes);
+      saveQuotesToLocalStorage();
+      alert("Quotes imported successfully!");
+    } catch (err) {
+      alert("Failed to import JSON file.");
+      console.error(err);
+    }
+  };
+
+  fileReader.readAsText(event.target.files[0]);
+}
+
+sessionStorage.setItem("lastQuote", JSON.stringify(quote));
+
+const lastQuote = sessionStorage.getItem("lastQuote");
+if (lastQuote) {
+  const quote = JSON.parse(lastQuote);
+  quoteDisplay.innerHTML = `"${quote.text}" — <em>${quote.category}</em>`;
+}

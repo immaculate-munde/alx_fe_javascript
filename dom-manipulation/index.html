@@ -12,7 +12,13 @@
     <br><br>
     <div>
       <div id="quoteFormContainer"></div>
+      <br><br>
+      <!-- Export button -->
+      <button id="exportBtn">Export Quotes</button>
 
+      <!-- Import input -->
+      <input type="file" id="importFile" accept=".json" onchange="importFromJsonFile(event)" />
+      
     </div>
 
     <script src="script.js"></script>
