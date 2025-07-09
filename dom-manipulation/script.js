@@ -2,7 +2,6 @@ let quotes = [];
 const quoteDisplay = document.getElementById("quoteDisplay");
 const newQuoteBtn = document.getElementById("newQuote");
 
-// On page load
 window.onload = function () {
   const storedQuotes = localStorage.getItem("quotes");
   if (storedQuotes) {
@@ -20,7 +19,6 @@ window.onload = function () {
   filterQuotes();
 };
 
-// ✅ Task 0: DOM - Create add quote form
 function createAddQuoteForm() {
   const formContainer = document.getElementById("quoteFormContainer");
 
@@ -43,7 +41,6 @@ function createAddQuoteForm() {
   formContainer.appendChild(addButton);
 }
 
-// ✅ Task 0: DOM - Filter quotes by category
 function filterQuotes() {
   const filter = document.getElementById("categoryFilter").value;
   localStorage.setItem("selectedCategory", filter);
@@ -62,10 +59,8 @@ function filterQuotes() {
   sessionStorage.setItem("lastQuote", JSON.stringify(quote));
 }
 
-// ✅ Show quote when button clicked
 newQuoteBtn.addEventListener("click", filterQuotes);
 
-// ✅ Task 0: DOM - Add new quote
 function addQuote() {
   const textInput = document.getElementById("newQuoteText");
   const categoryInput = document.getElementById("newQuoteCategory");
@@ -91,12 +86,10 @@ function addQuote() {
   populateCategories();
 }
 
-// ✅ Task 1: Storage - Save to localStorage
 function saveQuotesToLocalStorage() {
   localStorage.setItem("quotes", JSON.stringify(quotes));
 }
 
-// ✅ Task 2: Filtering - Populate dropdown
 function populateCategories() {
   const filter = document.getElementById("categoryFilter");
   const categories = [...new Set(quotes.map(q => q.category))];
@@ -115,7 +108,6 @@ function populateCategories() {
   }
 }
 
-// ✅ Task 1: Export JSON
 document.getElementById("exportBtn").addEventListener("click", function () {
   const blob = new Blob([JSON.stringify(quotes, null, 2)], { type: "application/json" });
   const url = URL.createObjectURL(blob);
@@ -126,7 +118,6 @@ document.getElementById("exportBtn").addEventListener("click", function () {
   URL.revokeObjectURL(url);
 });
 
-// ✅ Task 1: Import JSON
 function importFromJsonFile(event) {
   const fileReader = new FileReader();
   fileReader.onload = function (e) {
@@ -148,36 +139,32 @@ function importFromJsonFile(event) {
   fileReader.readAsText(event.target.files[0]);
 }
 
-// ✅ Task 3: Server Sync - Required function
-function fetchQuotesFromServer() {
-  return fetch("https://jsonplaceholder.typicode.com/posts?_limit=3")
-    .then(response => response.json())
-    .then(serverData => {
-      return serverData.map(post => ({
-        text: post.title,
-        category: "Server"
-      }));
-    });
+// ✅ Required async/await function
+async function fetchQuotesFromServer() {
+  const response = await fetch("https://jsonplaceholder.typicode.com/posts?_limit=3");
+  const serverData = await response.json();
+  return serverData.map(post => ({
+    text: post.title,
+    category: "Server"
+  }));
 }
 
-// ✅ Task 3: Sync and Conflict Resolution
-function syncWithServer() {
+// ✅ Server sync using async/await
+async function syncWithServer() {
   const status = document.getElementById("syncStatus");
   status.innerHTML = "🔄 Syncing with server...";
 
-  fetchQuotesFromServer()
-    .then(serverQuotes => {
-      quotes = [...serverQuotes, ...quotes]; // Server takes priority
-      saveQuotesToLocalStorage();
-      populateCategories();
-      filterQuotes();
-      status.innerHTML = "✅ Synced successfully. Server quotes added.";
-    })
-    .catch(err => {
-      status.innerHTML = "❌ Failed to sync with server.";
-      console.error("Sync error:", err);
-    });
+  try {
+    const serverQuotes = await fetchQuotesFromServer();
+    quotes = [...serverQuotes, ...quotes];
+    saveQuotesToLocalStorage();
+    populateCategories();
+    filterQuotes();
+    status.innerHTML = "✅ Synced successfully. Server quotes added.";
+  } catch (error) {
+    status.innerHTML = "❌ Failed to sync with server.";
+    console.error("Sync error:", error);
+  }
 }
 
-// ✅ Sync button event
 document.getElementById("syncBtn").addEventListener("click", syncWithServer);
